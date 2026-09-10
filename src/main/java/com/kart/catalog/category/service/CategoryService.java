@@ -1,10 +1,13 @@
 package com.kart.catalog.category.service;
 
+import com.kart.catalog.category.dto.CategoryCreateRequest;
 import com.kart.catalog.category.dto.CategoryResponse;
 import com.kart.catalog.category.entity.CategoryEntity;
 import com.kart.catalog.category.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,15 +19,24 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public CategoryResponse getAllCategories(
+    public List<CategoryResponse> getAllCategories(
             String status
     ) {
-        CategoryEntity categoryEntity = categoryRepository.findWithFilter(status);
-        return CategoryResponse.getCategoryResponse(categoryEntity);
+        List<CategoryEntity> categoryEntities = categoryRepository.findWithFilter(status);
+        List<CategoryResponse> responses = new ArrayList<>();
+        for(CategoryEntity categoryEntity: categoryEntities) {
+            responses.add(CategoryResponse.getCategoryResponse(categoryEntity));
+        }
+        return responses;
     }
 
     public CategoryResponse getCategoryById(UUID id) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow();
         return CategoryResponse.getCategoryResponse(categoryEntity);
+    }
+
+    public CategoryResponse createCategory(CategoryCreateRequest request) {
+        CategoryEntity entity = new CategoryEntity(request.name(), request.code(), request.status());
+        return CategoryResponse.getCategoryResponse(categoryRepository.save(entity));
     }
 }

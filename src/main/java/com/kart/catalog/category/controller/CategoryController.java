@@ -1,9 +1,13 @@
 package com.kart.catalog.category.controller;
 
+import com.kart.catalog.category.dto.CategoryCreateRequest;
 import com.kart.catalog.category.dto.CategoryResponse;
 import com.kart.catalog.category.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/categories")
@@ -17,10 +21,25 @@ public class CategoryController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public CategoryResponse getCategories(
+    public List<CategoryResponse> getCategories(
             @RequestParam(required = false)
             String status
     ) {
         return categoryService.getAllCategories(status);
+    }
+
+    @GetMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryResponse getCategoryById(
+            @PathVariable
+            UUID categoryId
+    ){
+        return categoryService.getCategoryById(categoryId);
+    }
+
+    @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CategoryResponse create(@RequestBody CategoryCreateRequest request) {
+        return categoryService.createCategory(request);
     }
 }

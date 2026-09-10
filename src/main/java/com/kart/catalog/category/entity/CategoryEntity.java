@@ -33,10 +33,12 @@ public class CategoryEntity {
 
     public CategoryEntity(
             String name,
-            String code
+            String code,
+            String status
     ) {
         this.name = name;
         this.code = code;
+        this.status = status;
         this.createdAt = OffsetDateTime.now();
         this.updatedAt = OffsetDateTime.now();
     }
