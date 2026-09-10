@@ -1,0 +1,10 @@
+CREATE TABLE categories (
+    id UUID PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    code VARCHAR(10) NOT NULL UNIQUE,
+    status VARCHAR(10) NOT NULL DEFAULT 'ENABLED',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIME,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIME,
+);
+
+CREATE INDEX idx_categories_status ON categories(status);
