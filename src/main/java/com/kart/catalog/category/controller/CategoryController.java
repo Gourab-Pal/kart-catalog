@@ -49,7 +49,7 @@ public class CategoryController {
         return categoryService.deleteCategory(categoryId);
     }
 
-    @PutMapping("/{categoryId}/updateName")
+    @PatchMapping("/{categoryId}/updateName")
     @ResponseStatus(HttpStatus.OK)
     public CategoryNameUpdateResponse updateName(
             @PathVariable
@@ -60,7 +60,7 @@ public class CategoryController {
         return categoryService.updateName(categoryId, request);
     }
 
-    @PutMapping("/{categoryId}/enable")
+    @PatchMapping("/{categoryId}/enable")
     @ResponseStatus(HttpStatus.OK)
     public StatusUpdateResponse enable(
             @PathVariable
@@ -69,7 +69,7 @@ public class CategoryController {
         return categoryService.enable(categoryId);
     }
 
-    @PutMapping("/{categoryId}/disable")
+    @PatchMapping("/{categoryId}/disable")
     @ResponseStatus(HttpStatus.OK)
     public StatusUpdateResponse disable(
             @PathVariable
