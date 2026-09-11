@@ -53,10 +53,14 @@ public class CategoryService {
         return CategoryResponse.getCategoryResponse(categoryRepository.save(entity));
     }
 
+    @CacheEvict(
+            cacheNames = "categories",
+            allEntries = true
+    )
     @Transactional
     public CategoryDeleteResponse deleteCategory(UUID id) {
-        categoryRepository.findById(id).orElseThrow(()->new CategoryNotFoundException(id));
-        categoryRepository.deleteById(id);
+        CategoryEntity entity = categoryRepository.findById(id).orElseThrow(()->new CategoryNotFoundException(id));
+        categoryRepository.delete(entity);
         return CategoryDeleteResponse.getCategoryDeleteResponse(id);
     }
 }
