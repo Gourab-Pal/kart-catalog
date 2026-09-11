@@ -3,6 +3,7 @@ package com.kart.catalog.category.service;
 import com.kart.catalog.category.dto.CategoryCreateRequest;
 import com.kart.catalog.category.dto.CategoryResponse;
 import com.kart.catalog.category.entity.CategoryEntity;
+import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.category.repository.CategoryRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,7 +38,7 @@ public class CategoryService {
     }
 
     public CategoryResponse getCategoryById(UUID id) {
-        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow();
+        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(()-> new CategoryNotFoundException(id));
         return CategoryResponse.getCategoryResponse(categoryEntity);
     }
 

@@ -36,8 +36,7 @@ public class RedisConfig implements CachingConfigurer {
     public CacheErrorHandler errorHandler() {
         return new CacheErrorHandler() {
 
-            private final Logger log =
-                    LoggerFactory.getLogger(CacheErrorHandler.class);
+            private final Logger log = LoggerFactory.getLogger(CacheErrorHandler.class);
 
             @Override
             public void handleCacheGetError(
