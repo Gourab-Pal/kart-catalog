@@ -1,6 +1,7 @@
 package com.kart.catalog.category.controller;
 
 import com.kart.catalog.category.dto.CategoryCreateRequest;
+import com.kart.catalog.category.dto.CategoryDeleteResponse;
 import com.kart.catalog.category.dto.CategoryResponse;
 import com.kart.catalog.category.service.CategoryService;
 import jakarta.validation.Valid;
@@ -42,5 +43,11 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryResponse create(@Valid @RequestBody CategoryCreateRequest request) {
         return categoryService.createCategory(request);
+    }
+
+    @DeleteMapping("/{categoryId}/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryDeleteResponse deleteCategory(@PathVariable UUID categoryId) {
+        return categoryService.deleteCategory(categoryId);
     }
 }

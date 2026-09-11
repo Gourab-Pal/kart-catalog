@@ -1,10 +1,12 @@
 package com.kart.catalog.category.service;
 
 import com.kart.catalog.category.dto.CategoryCreateRequest;
+import com.kart.catalog.category.dto.CategoryDeleteResponse;
 import com.kart.catalog.category.dto.CategoryResponse;
 import com.kart.catalog.category.entity.CategoryEntity;
 import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.category.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -49,5 +51,12 @@ public class CategoryService {
     public CategoryResponse createCategory(CategoryCreateRequest request) {
         CategoryEntity entity = new CategoryEntity(request.name(), request.code(), request.status());
         return CategoryResponse.getCategoryResponse(categoryRepository.save(entity));
+    }
+
+    @Transactional
+    public CategoryDeleteResponse deleteCategory(UUID id) {
+        categoryRepository.findById(id).orElseThrow(()->new CategoryNotFoundException(id));
+        categoryRepository.deleteById(id);
+        return CategoryDeleteResponse.getCategoryDeleteResponse(id);
     }
 }
