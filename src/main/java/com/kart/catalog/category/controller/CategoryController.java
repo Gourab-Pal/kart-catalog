@@ -1,8 +1,6 @@
 package com.kart.catalog.category.controller;
 
-import com.kart.catalog.category.dto.CategoryCreateRequest;
-import com.kart.catalog.category.dto.CategoryDeleteResponse;
-import com.kart.catalog.category.dto.CategoryResponse;
+import com.kart.catalog.category.dto.*;
 import com.kart.catalog.category.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -49,5 +47,34 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.OK)
     public CategoryDeleteResponse deleteCategory(@PathVariable UUID categoryId) {
         return categoryService.deleteCategory(categoryId);
+    }
+
+    @PutMapping("/{categoryId}/updateName")
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryNameUpdateResponse updateName(
+            @PathVariable
+            UUID categoryId,
+
+            @RequestBody CategoryNameUpdateRequest request
+            ) {
+        return categoryService.updateName(categoryId, request);
+    }
+
+    @PutMapping("/{categoryId}/enable")
+    @ResponseStatus(HttpStatus.OK)
+    public StatusUpdateResponse enable(
+            @PathVariable
+            UUID categoryId
+    ) {
+        return categoryService.enable(categoryId);
+    }
+
+    @PutMapping("/{categoryId}/disable")
+    @ResponseStatus(HttpStatus.OK)
+    public StatusUpdateResponse disable(
+            @PathVariable
+            UUID categoryId
+    ) {
+        return categoryService.disable(categoryId);
     }
 }

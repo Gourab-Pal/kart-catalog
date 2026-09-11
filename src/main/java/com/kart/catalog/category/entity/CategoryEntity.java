@@ -1,5 +1,6 @@
 package com.kart.catalog.category.entity;
 
+import com.kart.catalog.category.exception.CategoryNameAlreadyExistsException;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
@@ -62,5 +63,25 @@ public class CategoryEntity {
 
     public String getStatus() {
         return this.status;
+    }
+
+    public OffsetDateTime getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void updateName(String updatedName) {
+        if(this.name.equals(updatedName)) {
+            throw new CategoryNameAlreadyExistsException(updatedName);
+        }
+        this.name = updatedName;
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    public void enable() {
+        this.status = "ENABLED";
+    }
+
+    public void disable() {
+        this.status = "DISABLED";
     }
 }

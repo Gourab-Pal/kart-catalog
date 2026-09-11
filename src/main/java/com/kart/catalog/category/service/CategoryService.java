@@ -1,8 +1,6 @@
 package com.kart.catalog.category.service;
 
-import com.kart.catalog.category.dto.CategoryCreateRequest;
-import com.kart.catalog.category.dto.CategoryDeleteResponse;
-import com.kart.catalog.category.dto.CategoryResponse;
+import com.kart.catalog.category.dto.*;
 import com.kart.catalog.category.entity.CategoryEntity;
 import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.category.repository.CategoryRepository;
@@ -62,5 +60,42 @@ public class CategoryService {
         CategoryEntity entity = categoryRepository.findById(id).orElseThrow(()->new CategoryNotFoundException(id));
         categoryRepository.delete(entity);
         return CategoryDeleteResponse.getCategoryDeleteResponse(id);
+    }
+
+    @CacheEvict(
+            cacheNames = "categories",
+            allEntries = true
+    )
+    @Transactional
+    public CategoryNameUpdateResponse updateName(UUID id, CategoryNameUpdateRequest request) {
+        CategoryEntity entity = categoryRepository.findById(id).orElseThrow(()->new CategoryNotFoundException(id));
+        String previousName = entity.getName();
+        entity.updateName(request.name());
+        CategoryEntity savedEntity = categoryRepository.save(entity);
+        return CategoryNameUpdateResponse.getNameUpdateResponse(savedEntity, previousName);
+    }
+
+    @CacheEvict(
+            cacheNames = "categories",
+            allEntries = true
+    )
+    @Transactional
+    public StatusUpdateResponse enable(UUID id) {
+        CategoryEntity entity = categoryRepository.findById(id).orElseThrow(()->new CategoryNotFoundException(id));
+        entity.enable();
+        CategoryEntity savedEntity = categoryRepository.save(entity);
+        return StatusUpdateResponse.getStatusUpdateResponse(savedEntity);
+    }
+
+    @CacheEvict(
+            cacheNames = "categories",
+            allEntries = true
+    )
+    @Transactional
+    public StatusUpdateResponse disable(UUID id) {
+        CategoryEntity entity = categoryRepository.findById(id).orElseThrow(()->new CategoryNotFoundException(id));
+        entity.disable();
+        CategoryEntity savedEntity = categoryRepository.save(entity);
+        return StatusUpdateResponse.getStatusUpdateResponse(savedEntity);
     }
 }

@@ -65,4 +65,14 @@ public class GlobalExceptionHandler {
                 OffsetDateTime.now()
         );
     }
+
+    @ExceptionHandler(CategoryNameAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public DataIntegrityViolationExceptionResponse handleCategoryNameAlreadyExistsException(CategoryNameAlreadyExistsException exception) {
+        log.error("Updated category name can not be same as current name --> {}", exception.getUpdatedName());
+        return new DataIntegrityViolationExceptionResponse(
+               "Updated category name can not be same as current name",
+               OffsetDateTime.now()
+        );
+    }
 }
