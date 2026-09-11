@@ -4,6 +4,8 @@ import com.kart.catalog.category.dto.CategoryCreateRequest;
 import com.kart.catalog.category.dto.CategoryResponse;
 import com.kart.catalog.category.entity.CategoryEntity;
 import com.kart.catalog.category.repository.CategoryRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,10 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Cacheable(
+            cacheNames = "categories",
+            key = "#status == null ? 'all' : #status"
+    )
     public List<CategoryResponse> getAllCategories(
             String status
     ) {
@@ -35,6 +41,10 @@ public class CategoryService {
         return CategoryResponse.getCategoryResponse(categoryEntity);
     }
 
+    @CacheEvict(
+            cacheNames = "categories",
+            allEntries = true
+    )
     public CategoryResponse createCategory(CategoryCreateRequest request) {
         CategoryEntity entity = new CategoryEntity(request.name(), request.code(), request.status());
         return CategoryResponse.getCategoryResponse(categoryRepository.save(entity));
