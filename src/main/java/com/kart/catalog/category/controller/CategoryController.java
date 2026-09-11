@@ -55,7 +55,7 @@ public class CategoryController {
             @PathVariable
             UUID categoryId,
 
-            @RequestBody CategoryNameUpdateRequest request
+            @Valid @RequestBody CategoryNameUpdateRequest request
             ) {
         return categoryService.updateName(categoryId, request);
     }
