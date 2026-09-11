@@ -3,6 +3,7 @@ package com.kart.catalog.category.controller;
 import com.kart.catalog.category.dto.CategoryCreateRequest;
 import com.kart.catalog.category.dto.CategoryResponse;
 import com.kart.catalog.category.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +40,7 @@ public class CategoryController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryResponse create(@RequestBody CategoryCreateRequest request) {
+    public CategoryResponse create(@Valid @RequestBody CategoryCreateRequest request) {
         return categoryService.createCategory(request);
     }
 }
