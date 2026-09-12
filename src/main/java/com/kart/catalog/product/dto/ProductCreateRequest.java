@@ -10,11 +10,11 @@ public record ProductCreateRequest(
         @NotNull(message = "Category id is required")
         UUID categoryId,
 
-        @NotNull(message = "Product name is required")
+        @NotBlank(message = "Product name is required")
         @Size(max = 150, message = "Product name can not exceed 150 character")
         String name,
 
-        @NotNull(message = "SKU is required")
+        @NotBlank(message = "SKU is required")
         @Size(max = 50, message = "SKU can not exceed 50 characters")
         @Pattern(
                 regexp = "[A-Z0-9_]+",
@@ -33,7 +33,7 @@ public record ProductCreateRequest(
         )
         BigDecimal price,
 
-        @NotNull(message = "Product status is required")
+        @NotBlank(message = "Product status is required")
         @Pattern(
                 regexp = "ENABLED|DISABLED",
                 message = "Status must be either ENABLED or DISABLED"

@@ -56,8 +56,6 @@ public class ProductEntity {
         this.description = description;
         this.price = price;
         this.status = status;
-        this.createdAt = OffsetDateTime.now();
-        this.updatedAt = OffsetDateTime.now();
     }
 
     @PrePersist
