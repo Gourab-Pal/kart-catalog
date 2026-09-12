@@ -22,6 +22,7 @@ public record ProductCreateRequest(
         )
         String sku,
 
+        @Size(max = 2000, message = "Description can not exceed 2000 characters")
         String description,
 
         @NotNull(message = "Product price is required")

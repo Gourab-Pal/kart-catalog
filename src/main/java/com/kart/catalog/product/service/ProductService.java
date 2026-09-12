@@ -7,6 +7,7 @@ import com.kart.catalog.product.dto.ProductCreateRequest;
 import com.kart.catalog.product.dto.ProductResponse;
 import com.kart.catalog.product.entity.ProductEntity;
 import com.kart.catalog.product.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class ProductService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Transactional
     public ProductResponse createProduct(ProductCreateRequest request) {
         CategoryEntity categoryEntity = categoryRepository
                 .findById(request.categoryId())
