@@ -1,9 +1,12 @@
-package com.kart.catalog.category.exception;
+package com.kart.catalog.common.exception;
 
 import com.kart.catalog.category.dto.CategoryNotFoundResponse;
 import com.kart.catalog.category.dto.DataIntegrityViolationExceptionResponse;
 import com.kart.catalog.category.dto.MethodArgumentTypeMismatchExceptionResponse;
 import com.kart.catalog.category.dto.ValidationErrorResponse;
+import com.kart.catalog.category.exception.CategoryNameAlreadyExistsException;
+import com.kart.catalog.category.exception.CategoryNotFoundException;
+import com.kart.catalog.common.dto.IllegalArgumentExceptionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -73,6 +76,16 @@ public class GlobalExceptionHandler {
         return new DataIntegrityViolationExceptionResponse(
                "Updated category name can not be same as current name",
                OffsetDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public IllegalArgumentExceptionResponse handleIllegalArgumentException(IllegalArgumentException exception) {
+        log.error("Illegal argument used: " + exception.getMessage());
+        return new IllegalArgumentExceptionResponse(
+                exception.getMessage(),
+                OffsetDateTime.now()
         );
     }
 }
