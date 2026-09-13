@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -46,14 +48,27 @@ public class ProductService {
 
     public Page<ProductResponse> getAllProducts(
             String status,
+            BigDecimal minPrice,
+            BigDecimal maxPrice,
+            String searchProductName,
             int page,
             int size,
             String sortBy,
             String sortDirection
     ) {
+        String lowerCasedSearchProductName = "";
+        if(searchProductName != null) {
+            lowerCasedSearchProductName = searchProductName.toLowerCase(Locale.ROOT);
+        }
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<ProductEntity> productPages = productRepository.findWithFilters(status, pageable);
+        Page<ProductEntity> productPages = productRepository.findWithFilters(
+                status,
+                minPrice,
+                maxPrice,
+                lowerCasedSearchProductName,
+                pageable
+        );
         return productPages.map(ProductResponse::getProductResponse);
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
@@ -38,9 +40,24 @@ public class ProductController {
             @RequestParam(defaultValue = "createdAt")
             String sortBy,
             @RequestParam(defaultValue = "desc")
-            String sortDirection
+            String sortDirection,
+            @RequestParam(required = false)
+            BigDecimal minPrice,
+            @RequestParam(required = false)
+            BigDecimal maxPrice,
+            @RequestParam(required = false)
+            String searchProductName
     ) {
-        return productService.getAllProducts(status, page, size, sortBy, sortDirection);
+        return productService.getAllProducts(
+                status,
+                minPrice,
+                maxPrice,
+                searchProductName,
+                page,
+                size,
+                sortBy,
+                sortDirection
+        );
     }
 
 }
