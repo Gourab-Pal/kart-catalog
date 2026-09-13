@@ -8,6 +8,10 @@ import com.kart.catalog.product.dto.ProductResponse;
 import com.kart.catalog.product.entity.ProductEntity;
 import com.kart.catalog.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -38,5 +42,18 @@ public class ProductService {
         );
         ProductEntity savedProductEntity = productRepository.save(productEntity);
         return ProductResponse.getProductResponse(savedProductEntity);
+    }
+
+    public Page<ProductResponse> getAllProducts(
+            String status,
+            int page,
+            int size,
+            String sortBy,
+            String sortDirection
+    ) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<ProductEntity> productPages = productRepository.findWithFilters(status, pageable);
+        return productPages.map(ProductResponse::getProductResponse);
     }
 }
