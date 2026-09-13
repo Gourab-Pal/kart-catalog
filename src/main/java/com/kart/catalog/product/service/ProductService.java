@@ -5,6 +5,7 @@ import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.category.repository.CategoryRepository;
 import com.kart.catalog.common.validation.GenericValidators;
 import com.kart.catalog.product.dto.ProductCreateRequest;
+import com.kart.catalog.product.exception.ProductNotFoundException;
 import com.kart.catalog.product.dto.ProductResponse;
 import com.kart.catalog.product.entity.ProductEntity;
 import com.kart.catalog.product.repository.ProductRepository;
@@ -16,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -69,5 +69,10 @@ public class ProductService {
                 pageable
         );
         return productPages.map(ProductResponse::getProductResponse);
+    }
+
+    public ProductResponse getProductById(UUID productId) {
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
+        return ProductResponse.getProductResponse(productEntity);
     }
 }

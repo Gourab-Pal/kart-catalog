@@ -7,6 +7,8 @@ import com.kart.catalog.category.dto.ValidationErrorResponse;
 import com.kart.catalog.category.exception.CategoryNameAlreadyExistsException;
 import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.common.dto.IllegalArgumentExceptionResponse;
+import com.kart.catalog.product.dto.ProductNotFoundExceptionResponse;
+import com.kart.catalog.product.exception.ProductNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -84,6 +86,18 @@ public class GlobalExceptionHandler {
     public IllegalArgumentExceptionResponse handleIllegalArgumentException(IllegalArgumentException exception) {
         log.error("Illegal argument used: " + exception.getMessage());
         return new IllegalArgumentExceptionResponse(
+                exception.getMessage(),
+                OffsetDateTime.now()
+        );
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ProductNotFoundExceptionResponse handleProductNotFoundException(ProductNotFoundException exception) {
+        log.error("Product with id: " + exception.getProductId() + " does not exist");
+        log.error(exception.getMessage());
+        return new ProductNotFoundExceptionResponse(
+                exception.getProductId(),
                 exception.getMessage(),
                 OffsetDateTime.now()
         );
