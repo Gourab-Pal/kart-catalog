@@ -48,13 +48,16 @@ public class ProductController {
             @RequestParam(required = false)
             BigDecimal maxPrice,
             @RequestParam(required = false)
-            String searchProductName
+            String searchProductName,
+            @RequestParam(required = false)
+            UUID categoryId
     ) {
         return productService.getAllProducts(
                 status,
                 minPrice,
                 maxPrice,
                 searchProductName,
+                categoryId,
                 page,
                 size,
                 sortBy,

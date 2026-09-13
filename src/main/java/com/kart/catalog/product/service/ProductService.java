@@ -53,6 +53,7 @@ public class ProductService {
             BigDecimal minPrice,
             BigDecimal maxPrice,
             String searchProductName,
+            UUID categoryId,
             int page,
             int size,
             String sortBy,
@@ -67,6 +68,7 @@ public class ProductService {
                 minPrice,
                 maxPrice,
                 searchProductName,
+                categoryId,
                 pageable
         );
         return productPages.map(ProductResponse::getProductResponse);
