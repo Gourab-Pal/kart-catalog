@@ -3,6 +3,7 @@ package com.kart.catalog.product.service;
 import com.kart.catalog.category.entity.CategoryEntity;
 import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.category.repository.CategoryRepository;
+import com.kart.catalog.common.validation.GenericValidators;
 import com.kart.catalog.product.dto.ProductCreateRequest;
 import com.kart.catalog.product.dto.ProductResponse;
 import com.kart.catalog.product.entity.ProductEntity;
@@ -56,17 +57,15 @@ public class ProductService {
             String sortBy,
             String sortDirection
     ) {
-        String lowerCasedSearchProductName = "";
-        if(searchProductName != null) {
-            lowerCasedSearchProductName = searchProductName.toLowerCase(Locale.ROOT);
-        }
+        searchProductName = GenericValidators.normalizeProductNameSearchString(searchProductName);
+        GenericValidators.validateProductFilters(status, minPrice, maxPrice, page, size, sortBy, sortDirection);
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<ProductEntity> productPages = productRepository.findWithFilters(
                 status,
                 minPrice,
                 maxPrice,
-                lowerCasedSearchProductName,
+                searchProductName,
                 pageable
         );
         return productPages.map(ProductResponse::getProductResponse);
