@@ -47,6 +47,7 @@ public class ProductService {
         return ProductResponse.getProductResponse(savedProductEntity);
     }
 
+    @Transactional
     public Page<ProductResponse> getAllProducts(
             String status,
             BigDecimal minPrice,
