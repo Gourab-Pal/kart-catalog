@@ -1,5 +1,6 @@
 package com.kart.catalog.product.dto;
 
+import com.kart.catalog.category.dto.CategoryResponse;
 import com.kart.catalog.product.entity.ProductEntity;
 
 import java.math.BigDecimal;
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 public record ProductResponse(
         UUID id,
-        UUID categoryId,
+        CategoryResponse category,
         String name,
         String sku,
         String description,
@@ -20,7 +21,7 @@ public record ProductResponse(
     public static ProductResponse getProductResponse(ProductEntity entity) {
         return new ProductResponse(
                 entity.getId(),
-                entity.getCategory().getId(),
+                CategoryResponse.getCategoryResponse(entity.getCategory()),
                 entity.getName(),
                 entity.getSku(),
                 entity.getDescription(),

@@ -71,6 +71,7 @@ public class ProductService {
         return productPages.map(ProductResponse::getProductResponse);
     }
 
+    @Transactional
     public ProductResponse getProductById(UUID productId) {
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
         return ProductResponse.getProductResponse(productEntity);
