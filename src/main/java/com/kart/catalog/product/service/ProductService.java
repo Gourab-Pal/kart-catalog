@@ -9,6 +9,8 @@ import com.kart.catalog.product.exception.ProductNotFoundException;
 import com.kart.catalog.product.entity.ProductEntity;
 import com.kart.catalog.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,10 @@ public class ProductService {
         this.categoryRepository = categoryRepository;
     }
 
+    @CacheEvict(
+            cacheNames = "products",
+            allEntries = true
+    )
     @Transactional
     public ProductResponse createProduct(ProductCreateRequest request) {
         CategoryEntity categoryEntity = categoryRepository
@@ -46,6 +52,10 @@ public class ProductService {
         return ProductResponse.getProductResponse(savedProductEntity);
     }
 
+    @Cacheable(
+            cacheNames = "products",
+            key = "#status == null ? 'all' : #status"
+    )
     @Transactional
     public Page<ProductResponse> getAllProducts(
             String status,
@@ -79,6 +89,10 @@ public class ProductService {
         return ProductResponse.getProductResponse(productEntity);
     }
 
+    @CacheEvict(
+            cacheNames = "products",
+            allEntries = true
+    )
     @Transactional
     public ProductResponse updateProductDescription(UUID productId, ProductDescriptionUpdateRequest request) {
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
@@ -87,6 +101,10 @@ public class ProductService {
         return ProductResponse.getProductResponse(savedEntity);
     }
 
+    @CacheEvict(
+            cacheNames = "products",
+            allEntries = true
+    )
     @Transactional
     public ProductResponse updatePrice(UUID productId, ProductPriceUpdateRequest request) {
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
@@ -95,6 +113,10 @@ public class ProductService {
         return ProductResponse.getProductResponse(savedEntity);
     }
 
+    @CacheEvict(
+            cacheNames = "products",
+            allEntries = true
+    )
     @Transactional
     public ProductResponse enableProduct(UUID productId) {
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
@@ -103,6 +125,10 @@ public class ProductService {
         return ProductResponse.getProductResponse(savedEntity);
     }
 
+    @CacheEvict(
+            cacheNames = "products",
+            allEntries = true
+    )
     @Transactional
     public ProductResponse disableProduct(UUID productId) {
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
@@ -111,6 +137,10 @@ public class ProductService {
         return ProductResponse.getProductResponse(savedEntity);
     }
 
+    @CacheEvict(
+            cacheNames = "products",
+            allEntries = true
+    )
     @Transactional
     public ProductDeleteResponse deleteProduct(UUID productId) {
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
