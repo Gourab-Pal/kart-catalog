@@ -11,7 +11,7 @@ public record CategoryDeleteResponse(
     public static CategoryDeleteResponse getCategoryDeleteResponse(UUID id) {
         return new CategoryDeleteResponse(
                 id,
-                "Category id deleted",
+                "Category deleted",
                 OffsetDateTime.now()
         );
     }

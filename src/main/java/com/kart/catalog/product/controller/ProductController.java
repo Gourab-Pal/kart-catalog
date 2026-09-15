@@ -1,7 +1,6 @@
 package com.kart.catalog.product.controller;
 
-import com.kart.catalog.product.dto.ProductCreateRequest;
-import com.kart.catalog.product.dto.ProductResponse;
+import com.kart.catalog.product.dto.*;
 import com.kart.catalog.product.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
@@ -72,5 +71,56 @@ public class ProductController {
            UUID productId
     ) {
         return productService.getProductById(productId);
+    }
+
+    @PatchMapping("/{productId}/updateDescription")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductResponse updateProductDescription(
+            @PathVariable
+            UUID productId,
+            @Valid
+            @RequestBody
+            ProductDescriptionUpdateRequest request
+    ) {
+        return productService.updateProductDescription(productId, request);
+    }
+
+    @PatchMapping("/{productId}/updatePrice")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductResponse updateProductPrice(
+            @PathVariable
+            UUID productId,
+            @Valid
+            @RequestBody
+            ProductPriceUpdateRequest request
+    ) {
+        return productService.updatePrice(productId, request);
+    }
+
+    @PatchMapping("/{productId}/enable")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductResponse enableProduct(
+            @PathVariable
+            UUID productId
+    ) {
+        return productService.enableProduct(productId);
+    }
+
+    @PatchMapping("/{productId}/disable")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductResponse disableProduct(
+            @PathVariable
+            UUID productId
+    ) {
+        return productService.disableProduct(productId);
+    }
+
+    @DeleteMapping("/{productId}/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductDeleteResponse delete(
+            @PathVariable
+            UUID productId
+    ) {
+        return productService.deleteProduct(productId);
     }
 }

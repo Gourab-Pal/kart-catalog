@@ -79,4 +79,24 @@ public class ProductEntity {
     public String getStatus() {return status;}
     public OffsetDateTime getCreatedAt() {return createdAt;}
     public OffsetDateTime getUpdatedAt() {return updatedAt;}
+
+    public void updateDescription(String description) {
+        this.description = description;
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    public void updatePrice(BigDecimal price) {
+        this.price = price;
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    public void enable() {
+        this.status = "ENABLED";
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    public void disable() {
+        this.status = "DISABLED";
+        this.updatedAt = OffsetDateTime.now();
+    }
 }

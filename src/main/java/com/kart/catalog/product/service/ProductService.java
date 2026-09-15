@@ -4,9 +4,8 @@ import com.kart.catalog.category.entity.CategoryEntity;
 import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.category.repository.CategoryRepository;
 import com.kart.catalog.common.validation.GenericValidators;
-import com.kart.catalog.product.dto.ProductCreateRequest;
+import com.kart.catalog.product.dto.*;
 import com.kart.catalog.product.exception.ProductNotFoundException;
-import com.kart.catalog.product.dto.ProductResponse;
 import com.kart.catalog.product.entity.ProductEntity;
 import com.kart.catalog.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -78,5 +77,44 @@ public class ProductService {
     public ProductResponse getProductById(UUID productId) {
         ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
         return ProductResponse.getProductResponse(productEntity);
+    }
+
+    @Transactional
+    public ProductResponse updateProductDescription(UUID productId, ProductDescriptionUpdateRequest request) {
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
+        productEntity.updateDescription(request.description());
+        ProductEntity savedEntity = productRepository.save(productEntity);
+        return ProductResponse.getProductResponse(savedEntity);
+    }
+
+    @Transactional
+    public ProductResponse updatePrice(UUID productId, ProductPriceUpdateRequest request) {
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
+        productEntity.updatePrice(request.price());
+        ProductEntity savedEntity = productRepository.save(productEntity);
+        return ProductResponse.getProductResponse(savedEntity);
+    }
+
+    @Transactional
+    public ProductResponse enableProduct(UUID productId) {
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
+        productEntity.enable();
+        ProductEntity savedEntity = productRepository.save(productEntity);
+        return ProductResponse.getProductResponse(savedEntity);
+    }
+
+    @Transactional
+    public ProductResponse disableProduct(UUID productId) {
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
+        productEntity.disable();
+        ProductEntity savedEntity = productRepository.save(productEntity);
+        return ProductResponse.getProductResponse(savedEntity);
+    }
+
+    @Transactional
+    public ProductDeleteResponse deleteProduct(UUID productId) {
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(productId));
+        productRepository.delete(productEntity);
+        return ProductDeleteResponse.getDeleteResponse(productEntity.getId());
     }
 }
