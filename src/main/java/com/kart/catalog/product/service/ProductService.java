@@ -40,6 +40,9 @@ public class ProductService {
         CategoryEntity categoryEntity = categoryRepository
                 .findById(request.categoryId())
                 .orElseThrow(()->new CategoryNotFoundException(request.categoryId()));
+        if("DISABLED".equals(categoryEntity.getStatus())) {
+            throw new IllegalArgumentException("Can not create product with disabled category");
+        }
         ProductEntity productEntity = new ProductEntity(
                 categoryEntity,
                 request.name(),
