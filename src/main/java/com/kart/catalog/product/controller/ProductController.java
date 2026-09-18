@@ -31,7 +31,7 @@ public class ProductController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<ProductResponse> getProducts(
+    public ProductPageResponse getProducts(
             @RequestParam(required = false)
             String status,
             @RequestParam(defaultValue = "0")

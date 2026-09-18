@@ -54,10 +54,18 @@ public class ProductService {
 
     @Cacheable(
             cacheNames = "products",
-            key = "#status == null ? 'all' : #status"
+            key = "(#status ?: 'ALL') + ':' + " +
+                    "(#minPrice ?: 'NONE') + ':' + " +
+                    "(#maxPrice ?: 'NONE') + ':' + " +
+                    "(#searchProductName ?: 'NONE') + ':' + " +
+                    "(#categoryId ?: 'ALL') + ':' + " +
+                    "#page + ':' + " +
+                    "#size + ':' + " +
+                    "#sortBy + ':' + " +
+                    "#sortDirection"
     )
     @Transactional
-    public Page<ProductResponse> getAllProducts(
+    public ProductPageResponse getAllProducts(
             String status,
             BigDecimal minPrice,
             BigDecimal maxPrice,
@@ -80,7 +88,8 @@ public class ProductService {
                 categoryId,
                 pageable
         );
-        return productPages.map(ProductResponse::getProductResponse);
+        Page<ProductResponse> pageResponse = productPages.map(ProductResponse::getProductResponse);
+        return ProductPageResponse.from(pageResponse);
     }
 
     @Transactional
