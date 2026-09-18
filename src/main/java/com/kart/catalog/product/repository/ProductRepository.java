@@ -4,6 +4,7 @@ import com.kart.catalog.product.entity.ProductEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -29,4 +30,14 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
             @Param("categoryId") UUID categoryId,
             Pageable pageable
     );
+
+    @Modifying
+    @Query("""
+        UPDATE ProductEntity product
+        SET product.status = 'DISABLED',
+            product.updatedAt = CURRENT_TIMESTAMP WHERE product.category.id = :categoryId
+            AND product.status='ENABLED'
+    """)
+    int disableProductsByCategoryIdDisable(
+            @Param("categoryId") UUID categoryId);
 }

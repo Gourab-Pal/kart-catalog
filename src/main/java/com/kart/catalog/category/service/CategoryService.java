@@ -4,9 +4,11 @@ import com.kart.catalog.category.dto.*;
 import com.kart.catalog.category.entity.CategoryEntity;
 import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.category.repository.CategoryRepository;
+import com.kart.catalog.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,9 +19,11 @@ import java.util.UUID;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
     }
 
     @Cacheable(
@@ -87,14 +91,17 @@ public class CategoryService {
         return StatusUpdateResponse.getStatusUpdateResponse(savedEntity);
     }
 
-    @CacheEvict(
-            cacheNames = "categories",
-            allEntries = true
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "categories", allEntries = true),
+                    @CacheEvict(cacheNames = "products", allEntries = true)
+            }
     )
     @Transactional
     public StatusUpdateResponse disable(UUID id) {
         CategoryEntity entity = categoryRepository.findById(id).orElseThrow(()->new CategoryNotFoundException(id));
         entity.disable();
+        productRepository.disableProductsByCategoryIdDisable(id);
         CategoryEntity savedEntity = categoryRepository.save(entity);
         return StatusUpdateResponse.getStatusUpdateResponse(savedEntity);
     }
