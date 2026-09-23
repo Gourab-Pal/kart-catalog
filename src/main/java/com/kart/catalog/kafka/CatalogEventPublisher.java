@@ -2,6 +2,7 @@ package com.kart.catalog.kafka;
 
 import com.kart.catalog.kafka.event.CatalogEvent;
 import com.kart.catalog.kafka.event.ProductCreatedPayload;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.SendResult;
@@ -20,7 +21,9 @@ public class CatalogEventPublisher {
     private final KafkaTemplate<String, CatalogEvent> kafkaTemplate;
     private final String catalogEventTopic;
 
-    public CatalogEventPublisher(KafkaTemplate<String, CatalogEvent> kafkaTemplate, String catalogEventTopic) {
+    public CatalogEventPublisher(
+            KafkaTemplate<String, CatalogEvent> kafkaTemplate,
+            @Value("${kafka.topic.catalog-events}") String catalogEventTopic) {
         this.kafkaTemplate = kafkaTemplate;
         this.catalogEventTopic = catalogEventTopic;
     }
