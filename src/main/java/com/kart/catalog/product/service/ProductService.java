@@ -4,6 +4,7 @@ import com.kart.catalog.category.entity.CategoryEntity;
 import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.category.repository.CategoryRepository;
 import com.kart.catalog.common.validation.GenericValidators;
+import com.kart.catalog.kafka.CatalogEventPublisher;
 import com.kart.catalog.product.dto.*;
 import com.kart.catalog.product.exception.ProductNotFoundException;
 import com.kart.catalog.product.entity.ProductEntity;
@@ -25,10 +26,12 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final CatalogEventPublisher  catalogEventPublisher;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository,  CatalogEventPublisher  catalogEventPublisher) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.catalogEventPublisher = catalogEventPublisher;
     }
 
     @CacheEvict(
@@ -52,6 +55,7 @@ public class ProductService {
                 request.status()
         );
         ProductEntity savedProductEntity = productRepository.save(productEntity);
+        catalogEventPublisher.publishProductCreatedEvent(savedProductEntity.getId());
         return ProductResponse.getProductResponse(savedProductEntity);
     }
 
