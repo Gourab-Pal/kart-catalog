@@ -4,6 +4,7 @@ import com.kart.catalog.category.entity.CategoryEntity;
 import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.category.repository.CategoryRepository;
 import com.kart.catalog.common.validation.GenericValidators;
+import com.kart.catalog.kafka.event.ProductCreatedPayload;
 import com.kart.catalog.outbox.service.OutboxEventService;
 import com.kart.catalog.product.dto.*;
 import com.kart.catalog.product.exception.ProductNotFoundException;
@@ -59,7 +60,13 @@ public class ProductService {
                 request.status()
         );
         ProductEntity savedProductEntity = productRepository.save(productEntity);
-        outboxEventService.saveProductCreatedEvent(savedProductEntity.getId());
+        outboxEventService.saveEvent(
+                "product",
+                savedProductEntity.getId(),
+                "PRODUCT_CREATED",
+                1,
+                new ProductCreatedPayload(savedProductEntity.getId())
+        );
         return ProductResponse.getProductResponse(savedProductEntity);
     }
 

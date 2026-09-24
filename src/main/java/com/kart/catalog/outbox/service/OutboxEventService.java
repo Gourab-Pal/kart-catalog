@@ -21,14 +21,19 @@ public class OutboxEventService {
     }
 
     @Transactional
-    public void saveProductCreatedEvent(UUID productId) {
-        ProductCreatedPayload productCreatedPayload = new ProductCreatedPayload(productId);
+    public void saveEvent(
+            String aggregateType,
+            UUID aggregateId,
+            String eventType,
+            int eventVersion,
+            Object payload
+    ) {
         OutboxEventEntity outboxEvent =   new OutboxEventEntity(
-                "product",
-                productId,
-                "PRODUCT_CREATED",
-                1,
-                objectMapper.valueToTree(productCreatedPayload)
+                aggregateType,
+                aggregateId,
+                eventType,
+                eventVersion,
+                objectMapper.valueToTree(payload)
         );
         outboxEventRepository.save(outboxEvent);
     }
