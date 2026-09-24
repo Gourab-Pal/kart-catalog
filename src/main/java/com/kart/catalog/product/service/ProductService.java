@@ -4,7 +4,6 @@ import com.kart.catalog.category.entity.CategoryEntity;
 import com.kart.catalog.category.exception.CategoryNotFoundException;
 import com.kart.catalog.category.repository.CategoryRepository;
 import com.kart.catalog.common.validation.GenericValidators;
-import com.kart.catalog.kafka.CatalogEventPublisher;
 import com.kart.catalog.outbox.service.OutboxEventService;
 import com.kart.catalog.product.dto.*;
 import com.kart.catalog.product.exception.ProductNotFoundException;
@@ -27,18 +26,15 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final CatalogEventPublisher  catalogEventPublisher;
     private final OutboxEventService  outboxEventService;
 
     public ProductService(
             ProductRepository productRepository,
             CategoryRepository categoryRepository,
-            CatalogEventPublisher  catalogEventPublisher,
             OutboxEventService  outboxEventService
     ) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        this.catalogEventPublisher = catalogEventPublisher;
         this.outboxEventService = outboxEventService;
     }
 
