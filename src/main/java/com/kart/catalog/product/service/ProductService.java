@@ -60,7 +60,6 @@ public class ProductService {
         );
         ProductEntity savedProductEntity = productRepository.save(productEntity);
         outboxEventService.saveProductCreatedEvent(savedProductEntity.getId());
-        //catalogEventPublisher.publishProductCreatedEvent(savedProductEntity.getId());
         return ProductResponse.getProductResponse(savedProductEntity);
     }
 
