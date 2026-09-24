@@ -1,6 +1,5 @@
 package com.kart.catalog.outbox.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kart.catalog.kafka.event.CatalogEvent;
 import com.kart.catalog.outbox.entity.OutboxEventEntity;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -18,9 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class OutboxPublisher {
 
-    private static final Logger logger =
-            LoggerFactory.getLogger(OutboxPublisher.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(OutboxPublisher.class);
     private final OutboxClaimService outboxClaimService;
     private final KafkaTemplate<String, CatalogEvent> kafkaTemplate;
     private final String catalogEventsTopic;
@@ -28,7 +25,6 @@ public class OutboxPublisher {
     public OutboxPublisher(
             OutboxClaimService outboxClaimService,
             KafkaTemplate<String, CatalogEvent> kafkaTemplate,
-            ObjectMapper objectMapper,
             @Value("${kafka.topic.catalog-events}") String catalogEventsTopic
     ) {
         this.outboxClaimService = outboxClaimService;
@@ -38,9 +34,7 @@ public class OutboxPublisher {
 
     @Scheduled(fixedDelay = 5000)
     public void publishPendingEvents() {
-        List<OutboxEventEntity> events =
-                outboxClaimService.claimDueEvents();
-
+        List<OutboxEventEntity> events = outboxClaimService.claimDueEvents();
         for (OutboxEventEntity outboxEvent : events) {
             publish(outboxEvent);
         }
@@ -56,8 +50,7 @@ public class OutboxPublisher {
                     outboxEvent.getPayload()
             );
 
-            ProducerRecord<String, CatalogEvent> record =
-                    new ProducerRecord<>(
+            ProducerRecord<String, CatalogEvent> record = new ProducerRecord<>(
                             catalogEventsTopic,
                             outboxEvent.getAggregateId().toString(),
                             event
@@ -72,11 +65,7 @@ public class OutboxPublisher {
 
             outboxClaimService.markPublished(outboxEvent.getId());
 
-            logger.info(
-                    "Published outbox event {} of type {}",
-                    outboxEvent.getId(),
-                    outboxEvent.getEventType()
-            );
+            logger.info("Published outbox event {} of type {}", outboxEvent.getId(), outboxEvent.getEventType());
         } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
             recordFailure(outboxEvent, exception);
@@ -85,10 +74,7 @@ public class OutboxPublisher {
         }
     }
 
-    private void recordFailure(
-            OutboxEventEntity outboxEvent,
-            Exception exception
-    ) {
+    private void recordFailure(OutboxEventEntity outboxEvent, Exception exception) {
         String error = exception.getMessage();
 
         if (error == null || error.isBlank()) {
@@ -100,10 +86,6 @@ public class OutboxPublisher {
                 error
         );
 
-        logger.warn(
-                "Failed to publish outbox event {}. Error: {}",
-                outboxEvent.getId(),
-                error
-        );
+        logger.warn("Failed to publish outbox event {}. Error: {}", outboxEvent.getId(), error);
     }
 }

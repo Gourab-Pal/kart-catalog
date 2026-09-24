@@ -28,17 +28,14 @@ public class OutboxClaimService {
     public List<OutboxEventEntity> claimDueEvents() {
         OffsetDateTime now = OffsetDateTime.now();
 
-        List<OutboxEventEntity> eligibleEvents =
-                outboxEventRepository.findEventsToProcess(now, BATCH_SIZE);
+        List<OutboxEventEntity> eligibleEvents = outboxEventRepository.findEventsToProcess(now, BATCH_SIZE);
 
         List<OutboxEventEntity> claimedEvents = new ArrayList<>();
         OffsetDateTime lockedUntil = now.plusSeconds(LOCK_DURATION_SECONDS);
 
         for (OutboxEventEntity event : eligibleEvents) {
             if (event.getAttemptCount() >= MAX_ATTEMPTS) {
-                event.markFailed(
-                        "Maximum publish attempts reached before the event was published"
-                );
+                event.markFailed("Maximum publish attempts reached before the event was published");
                 continue;
             }
 
@@ -51,32 +48,21 @@ public class OutboxClaimService {
 
     @Transactional
     public void markPublished(UUID eventId) {
-        OutboxEventEntity event = outboxEventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Outbox event not found: " + eventId
-                ));
-
+        OutboxEventEntity event = outboxEventRepository.findById(eventId).orElseThrow(() -> new IllegalStateException("Outbox event not found: " + eventId));
         event.markPublished();
     }
 
     @Transactional
     public void recordPublishFailure(UUID eventId, String error) {
-        OutboxEventEntity event = outboxEventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Outbox event not found: " + eventId
-                ));
+        OutboxEventEntity event = outboxEventRepository.findById(eventId).orElseThrow(() -> new IllegalStateException("Outbox event not found: " + eventId));
 
         if (event.getAttemptCount() >= MAX_ATTEMPTS) {
             event.markFailed(error);
             return;
         }
 
-        long retryDelaySeconds =
-                calculateRetryDelaySeconds(event.getAttemptCount());
-
-        OffsetDateTime nextAttemptAt =
-                OffsetDateTime.now().plusSeconds(retryDelaySeconds);
-
+        long retryDelaySeconds = calculateRetryDelaySeconds(event.getAttemptCount());
+        OffsetDateTime nextAttemptAt = OffsetDateTime.now().plusSeconds(retryDelaySeconds);
         event.scheduleRetry(nextAttemptAt, error);
     }
 
@@ -84,10 +70,7 @@ public class OutboxClaimService {
         long delaySeconds = 1;
 
         for (int retryNumber = 1; retryNumber < attemptCount; retryNumber++) {
-            delaySeconds = Math.min(
-                    delaySeconds * 2,
-                    MAX_RETRY_DELAY_SECONDS
-            );
+            delaySeconds = Math.min(delaySeconds * 2, MAX_RETRY_DELAY_SECONDS);
         }
 
         return delaySeconds;
