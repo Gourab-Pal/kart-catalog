@@ -2,7 +2,6 @@ package com.kart.catalog.outbox.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kart.catalog.kafka.event.CatalogEvent;
-import com.kart.catalog.kafka.event.ProductCreatedPayload;
 import com.kart.catalog.outbox.entity.OutboxEventEntity;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ public class OutboxPublisher {
 
     private final OutboxClaimService outboxClaimService;
     private final KafkaTemplate<String, CatalogEvent> kafkaTemplate;
-    private final ObjectMapper objectMapper;
     private final String catalogEventsTopic;
 
     public OutboxPublisher(
@@ -35,7 +33,6 @@ public class OutboxPublisher {
     ) {
         this.outboxClaimService = outboxClaimService;
         this.kafkaTemplate = kafkaTemplate;
-        this.objectMapper = objectMapper;
         this.catalogEventsTopic = catalogEventsTopic;
     }
 
@@ -51,17 +48,12 @@ public class OutboxPublisher {
 
     private void publish(OutboxEventEntity outboxEvent) {
         try {
-            ProductCreatedPayload payload = objectMapper.treeToValue(
-                    outboxEvent.getPayload(),
-                    ProductCreatedPayload.class
-            );
-
             CatalogEvent event = new CatalogEvent(
                     outboxEvent.getId(),
                     outboxEvent.getEventType(),
                     outboxEvent.getEventVersion(),
                     outboxEvent.getCreatedAt(),
-                    payload
+                    outboxEvent.getPayload()
             );
 
             ProducerRecord<String, CatalogEvent> record =
