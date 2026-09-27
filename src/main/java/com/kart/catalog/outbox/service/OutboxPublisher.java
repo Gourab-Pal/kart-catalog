@@ -1,6 +1,6 @@
 package com.kart.catalog.outbox.service;
 
-import com.kart.catalog.kafka.event.CatalogEvent;
+import com.kart.catalog.kafka.event.EventEnvelope;
 import com.kart.catalog.outbox.entity.OutboxEventEntity;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
@@ -19,12 +19,12 @@ public class OutboxPublisher {
 
     private static final Logger logger = LoggerFactory.getLogger(OutboxPublisher.class);
     private final OutboxClaimService outboxClaimService;
-    private final KafkaTemplate<String, CatalogEvent> kafkaTemplate;
+    private final KafkaTemplate<String, EventEnvelope> kafkaTemplate;
     private final String catalogEventsTopic;
 
     public OutboxPublisher(
             OutboxClaimService outboxClaimService,
-            KafkaTemplate<String, CatalogEvent> kafkaTemplate,
+            KafkaTemplate<String, EventEnvelope> kafkaTemplate,
             @Value("${kafka.topic.catalog-events}") String catalogEventsTopic
     ) {
         this.outboxClaimService = outboxClaimService;
@@ -42,7 +42,7 @@ public class OutboxPublisher {
 
     private void publish(OutboxEventEntity outboxEvent) {
         try {
-            CatalogEvent event = new CatalogEvent(
+            EventEnvelope event = new EventEnvelope(
                     outboxEvent.getId(),
                     outboxEvent.getEventType(),
                     outboxEvent.getEventVersion(),
@@ -50,7 +50,7 @@ public class OutboxPublisher {
                     outboxEvent.getPayload()
             );
 
-            ProducerRecord<String, CatalogEvent> record = new ProducerRecord<>(
+            ProducerRecord<String, EventEnvelope> record = new ProducerRecord<>(
                             catalogEventsTopic,
                             outboxEvent.getAggregateId().toString(),
                             event
